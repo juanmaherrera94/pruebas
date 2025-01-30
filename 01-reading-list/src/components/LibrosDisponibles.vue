@@ -4,7 +4,7 @@
             <h2>{{numeroLibros}} libros disponibles</h2>
             <p>en la lista de lectura</p>
             <p>Filtrar por pagina</p>
-            <input type="text" id="paginas"><button id="enviar">Buscar</button>
+            <input type="text" id="paginas" v-model="porPaginas">
             <select v-model="generoSeleccionado">
                 <option value="">Todos</option>
                 <option value="Fantasía">Fantasia</option>
@@ -34,6 +34,7 @@ const props = defineProps({
 
 
 const generoSeleccionado = ref("");
+const porPaginas = ref("");
 
 // Computed para contar los libros disponibles
 const numeroLibros = computed(() => librosFiltrados.value.length)
@@ -42,11 +43,21 @@ const numeroLibros = computed(() => librosFiltrados.value.length)
 const librosFiltrados = computed(() => {
     if (!generoSeleccionado.value) {
         return props.libros; // Si no se selecciona un genero, mostrar todos los libros
+    }else{
+        return props.libros.filter(libro => libro.book.genre === generoSeleccionado.value);
     }
-    return props.libros.filter(libro => libro.book.genre === generoSeleccionado.value);
+    
 });
 
+//computed para filtrar los libros por el numero de paginas
 
+const librosFiltradosPorPaginas = computed(()=>{
+    if(!porPaginas.value){
+        return props.libros
+    }else{
+        return props.libros.filter(libro=> libro.book.pages === porPaginas)
+    }
+})
 const emit = defineEmits(["agregarLectura"])
 const agregar = (libro) =>{
 
