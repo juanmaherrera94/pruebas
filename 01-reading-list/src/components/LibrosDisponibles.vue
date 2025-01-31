@@ -2,9 +2,11 @@
     <section>
         <div>
             <h2>{{numeroLibros}} libros disponibles</h2>
-            <p>en la lista de lectura</p>
+            <p>{{numeroLibrosFav}} en la lista de lectura</p>
             <p>Filtrar por pagina</p>
-            <input type="text" id="paginas" v-model="porPaginas">
+            <input type="text"  v-model="porPaginas">
+            <br>
+            <br>
             <select v-model="generoSeleccionado">
                 <option value="">Todos</option>
                 <option value="Fantasía">Fantasia</option>
@@ -24,14 +26,15 @@
 
 <script setup>
 
-import { defineProps,ref,defineEmits,computed } from 'vue'
+import { defineProps,ref,defineEmits,computed,onMounted } from 'vue'
 
 const props = defineProps({
     libros: Array,
-    require: true
+    favoritos: Array
 });
 
-
+// Computed para contar los libros en la lista de lectura
+const numeroLibrosFav = computed(() => props.favoritos.length); // 
 
 const generoSeleccionado = ref("");
 const porPaginas = ref("");
@@ -39,31 +42,23 @@ const porPaginas = ref("");
 // Computed para contar los libros disponibles
 const numeroLibros = computed(() => librosFiltrados.value.length)
 
-// Computed para filtrar libros por genero
+// Computed para filtrar libros por genero y por pagina
 const librosFiltrados = computed(() => {
-    if (!generoSeleccionado.value) {
-        return props.libros; // Si no se selecciona un genero, mostrar todos los libros
-    }else{
-        return props.libros.filter(libro => libro.book.genre === generoSeleccionado.value);
-    }
-    
+    const paginas = parseInt(porPaginas.value); // Convertimos a número
+
+    return props.libros.filter(libro => {
+        const cumpleGenero = !generoSeleccionado.value || libro.book.genre === generoSeleccionado.value;
+        const cumplePaginas = isNaN(paginas) || libro.book.pages === paginas; // Verificamos que páginas sea válido
+        return cumpleGenero && cumplePaginas;
+    });
 });
 
-//computed para filtrar los libros por el numero de paginas
-
-const librosFiltradosPorPaginas = computed(()=>{
-    if(!porPaginas.value){
-        return props.libros
-    }else{
-        return props.libros.filter(libro=> libro.book.pages === porPaginas)
-    }
-})
 const emit = defineEmits(["agregarLectura"])
+
 const agregar = (libro) =>{
 
     emit("agregarLectura",libro)
 }
-
 
 
 </script>
@@ -73,7 +68,7 @@ const agregar = (libro) =>{
   margin-top: 12px;
   float: left;
   padding: 15px;
-  width: 300px;
+  width: 250px;
   height: 300px;
   background: rgb(223, 225, 235);
   border-radius: 50px;
@@ -85,6 +80,24 @@ const agregar = (libro) =>{
               rgba(0, 0, 0, 0.09) 0px 8px 4px, 
               rgba(0, 0, 0, 0.09) 0px 16px 8px, 
               rgba(0, 0, 0, 0.09) 0px 32px 16px;
-
+  transition: all 0.3s ease-in-out; /* Suaviza la transición */
 }
+
+.card:hover {
+  box-shadow: 0 0 10px 3px rgba(0, 255, 0, 0.75),  /* Efecto de neón verde */
+              0 0 20px 5px rgba(0, 255, 0, 0.75), /* Resplandor más grande */
+              0 0 30px 10px rgba(0, 255, 0, 0.75); /* Resplandor extra */
+  transform: scale(1.05); /* Agrandar un poco la tarjeta */
+}
+
+.card h2, .card p {
+  transition: all 0.3s ease-in-out;
+}
+
+.card:hover h2, .card:hover p {
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.75), 
+               0 0 10px rgba(0, 255, 0, 0.75), 
+               0 0 15px rgba(0, 255, 0, 0.75); /* Efecto neón en texto */
+}
+
 </style>
