@@ -49,14 +49,10 @@ const librosFiltrados = computed(() => {
     const paginas = parseInt(porPaginas.value); // Convertimos a numero
 
     return props.libros.filter(libro => {
-    // Verifica si el libro pertenece al genero seleccionado
-    const cumpleGenero = generoSeleccionado.value ? libro.book.genre === generoSeleccionado.value : true;
-    
-    // Verifica si el numero de paginas coincide con el filtrado
-    const cumplePaginas = !isNaN(paginas) ? libro.book.pages === paginas : true; 
-    
-    // Retorna los libros que cumplen ambas condiciones
-    return cumpleGenero && cumplePaginas;
+        const cumpleGenero = !generoSeleccionado.value || libro.book.genre === generoSeleccionado.value; // comprobamos que el cumple el genero
+        const cumplePaginas = isNaN(paginas) || libro.book.pages === paginas; // comprobamos que paginas sea valido
+        return cumpleGenero && cumplePaginas; 
+    });
 });
 
 const emit = defineEmits(["agregarLectura"])
