@@ -28,6 +28,7 @@
 
 import { defineProps,ref,defineEmits,computed,onMounted } from 'vue'
 
+//definimos las propiedades que va a recibir desde el componente padre
 const props = defineProps({
     libros: Array,
     favoritos: Array
@@ -44,13 +45,18 @@ const numeroLibros = computed(() => librosFiltrados.value.length)
 
 // Computed para filtrar libros por genero y por pagina
 const librosFiltrados = computed(() => {
-    const paginas = parseInt(porPaginas.value); // Convertimos a número
+
+    const paginas = parseInt(porPaginas.value); // Convertimos a numero
 
     return props.libros.filter(libro => {
-        const cumpleGenero = !generoSeleccionado.value || libro.book.genre === generoSeleccionado.value;
-        const cumplePaginas = isNaN(paginas) || libro.book.pages === paginas; // Verificamos que páginas sea válido
-        return cumpleGenero && cumplePaginas;
-    });
+    // Verifica si el libro pertenece al genero seleccionado
+    const cumpleGenero = generoSeleccionado.value ? libro.book.genre === generoSeleccionado.value : true;
+    
+    // Verifica si el numero de paginas coincide con el filtrado
+    const cumplePaginas = !isNaN(paginas) ? libro.book.pages === paginas : true; 
+    
+    // Retorna los libros que cumplen ambas condiciones
+    return cumpleGenero && cumplePaginas;
 });
 
 const emit = defineEmits(["agregarLectura"])

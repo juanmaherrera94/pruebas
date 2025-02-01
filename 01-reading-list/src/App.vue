@@ -25,7 +25,7 @@
     }
   })
   
-  // Guardar los datos en localStorage
+  // Guardarmos los datos en localStorage
   const saveToLocalStorage = () => {
     localStorage.setItem('libros', JSON.stringify(libros.value))
     localStorage.setItem('favoritos', JSON.stringify(favoritos.value))
@@ -36,7 +36,7 @@
     if (!favoritos.value.find(fav => fav.book.ISBN === libro.book.ISBN)) {
       favoritos.value.push(libro)
       libros.value = libros.value.filter(fav => fav.book.ISBN !== libro.book.ISBN)
-      saveToLocalStorage()  // Guardar en localStorage
+      saveToLocalStorage()  // aqui se guarda  en el localStorage
     }
   }
   
@@ -46,7 +46,7 @@
       libros.value.push(libro)
     }
     favoritos.value = favoritos.value.filter(fav => fav.book.ISBN !== libro.book.ISBN)
-    saveToLocalStorage()  // Guardar en localStorage
+    saveToLocalStorage()  // aqui se guarda  en el localStorage
   }
   </script>
   
